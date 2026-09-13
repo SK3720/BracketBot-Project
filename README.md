@@ -36,6 +36,13 @@ once the tray's dropped off.
 Distance thresholds, drive speeds, and mp3 volumes are constants near the
 top of `full_delivery.py`.
 
+## Calibration
+
+`calibration/` holds a copy of the robot's fisheye camera calibrations
+(`fisheye_calib_left.json` — head cam, `fisheye_calib_wrist_left.json` —
+both wrist cams, right falls back to left's). Live copies stay at
+`/home/bracketbot/` on the robot; these are just a backup.
+
 ## Deploy layout
 
 The robot's `~/bbapps` is a separate deploy target, not this checkout — files
