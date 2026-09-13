@@ -1,0 +1,402 @@
+{
+  "base_extrusion__base_extrusion": {
+    "draco": "/robot/draco/Base_Extrusion__Base_Extrusion.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Base_Extrusion__Base_Extrusion.stl",
+    "bytes": {
+      "stl": 62084,
+      "draco": 4732
+    }
+  },
+  "base_extrusion__base_extrusion__base_extrusion__base_extrusion": {
+    "draco": "/robot/draco/Base_Extrusion__Base_Extrusion__Base_Extrusion__Base_Extrusion.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Base_Extrusion__Base_Extrusion__Base_Extrusion__Base_Extrusion.stl",
+    "bytes": {
+      "stl": 54084,
+      "draco": 3928
+    }
+  },
+  "base_plate__base_plate": {
+    "draco": "/robot/draco/Base_Plate__Base_Plate.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Base_Plate__Base_Plate.stl",
+    "bytes": {
+      "stl": 684,
+      "draco": 1136
+    }
+  },
+  "base_print__base_print": {
+    "draco": "/robot/draco/Base_Print__Base_Print.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Base_Print__Base_Print.stl",
+    "bytes": {
+      "stl": 218484,
+      "draco": 18888
+    }
+  },
+  "battery_terminal__battery_terminal": {
+    "draco": "/robot/draco/Battery_Terminal__Battery_Terminal.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Battery_Terminal__Battery_Terminal.stl",
+    "bytes": {
+      "stl": 34484,
+      "draco": 4156
+    }
+  },
+  "bicep__bicep": {
+    "draco": "/robot/draco/Bicep__Bicep.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bicep__Bicep.stl",
+    "bytes": {
+      "stl": 85684,
+      "draco": 4212
+    }
+  },
+  "bicep_cover__bicep_cover": {
+    "draco": "/robot/draco/Bicep_Cover__Bicep_Cover.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bicep_Cover__Bicep_Cover.stl",
+    "bytes": {
+      "stl": 265684,
+      "draco": 9136
+    }
+  },
+  "bottom_cover_back__bottom_cover_back__bottom_cover_back__bottom_cover_back": {
+    "draco": "/robot/draco/Bottom_Cover_Back__Bottom_Cover_Back__Bottom_Cover_Back__Bottom_Cover_Back.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bottom_Cover_Back__Bottom_Cover_Back__Bottom_Cover_Back__Bottom_Cover_Back.stl",
+    "bytes": {
+      "stl": 106084,
+      "draco": 9624
+    }
+  },
+  "bottom_cover_front__bottom_cover_front__bottom_cover_front__bottom_cover_front": {
+    "draco": "/robot/draco/Bottom_Cover_Front__Bottom_Cover_Front__Bottom_Cover_Front__Bottom_Cover_Front.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bottom_Cover_Front__Bottom_Cover_Front__Bottom_Cover_Front__Bottom_Cover_Front.stl",
+    "bytes": {
+      "stl": 105884,
+      "draco": 9628
+    }
+  },
+  "camera_cover__camera_cover__camera_cover__camera_cover": {
+    "draco": "/robot/draco/Camera_Cover__Camera_Cover__Camera_Cover__Camera_Cover.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Camera_Cover__Camera_Cover__Camera_Cover__Camera_Cover.stl",
+    "bytes": {
+      "stl": 91484,
+      "draco": 8660
+    }
+  },
+  "cover_middlebot_back__cover_middlebot_back__cover_middlebot_back__cover_middlebot_back": {
+    "draco": "/robot/draco/Cover_MiddleBot_Back__Cover_MiddleBot_Back__Cover_MiddleBot_Back__Cover_MiddleBot_Back.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Cover_MiddleBot_Back__Cover_MiddleBot_Back__Cover_MiddleBot_Back__Cover_MiddleBot_Back.stl",
+    "bytes": {
+      "stl": 91984,
+      "draco": 8420
+    }
+  },
+  "cover_middlebot_front__cover_middlebot_front__cover_middlebot_front__cover_middlebot_front": {
+    "draco": "/robot/draco/Cover_MiddleBot_Front__Cover_MiddleBot_Front__Cover_MiddleBot_Front__Cover_MiddleBot_Front.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Cover_MiddleBot_Front__Cover_MiddleBot_Front__Cover_MiddleBot_Front__Cover_MiddleBot_Front.stl",
+    "bytes": {
+      "stl": 91984,
+      "draco": 8384
+    }
+  },
+  "cover_middletop_back__cover_middletop_back__cover_middletop_back__cover_middletop_back": {
+    "draco": "/robot/draco/Cover_MiddleTop_Back__Cover_MiddleTop_Back__Cover_MiddleTop_Back__Cover_MiddleTop_Back.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Cover_MiddleTop_Back__Cover_MiddleTop_Back__Cover_MiddleTop_Back__Cover_MiddleTop_Back.stl",
+    "bytes": {
+      "stl": 91984,
+      "draco": 8400
+    }
+  },
+  "cover_middletop_front__cover_middletop_front__cover_middletop_front__cover_middletop_front": {
+    "draco": "/robot/draco/Cover_MiddleTop_Front__Cover_MiddleTop_Front__Cover_MiddleTop_Front__Cover_MiddleTop_Front.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Cover_MiddleTop_Front__Cover_MiddleTop_Front__Cover_MiddleTop_Front__Cover_MiddleTop_Front.stl",
+    "bytes": {
+      "stl": 91984,
+      "draco": 8400
+    }
+  },
+  "cover_top_front__cover_top_front__cover_top_front__cover_top_front": {
+    "draco": "/robot/draco/Cover_Top_Front__Cover_Top_Front__Cover_Top_Front__Cover_Top_Front.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Cover_Top_Front__Cover_Top_Front__Cover_Top_Front__Cover_Top_Front.stl",
+    "bytes": {
+      "stl": 97184,
+      "draco": 8856
+    }
+  },
+  "forearm__forearm": {
+    "draco": "/robot/draco/Forearm__Forearm.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm__Forearm.stl",
+    "bytes": {
+      "stl": 292084,
+      "draco": 10460
+    }
+  },
+  "forearm_cover__forearm_cover": {
+    "draco": "/robot/draco/Forearm_Cover__Forearm_Cover.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm_Cover__Forearm_Cover.stl",
+    "bytes": {
+      "stl": 176784,
+      "draco": 7420
+    }
+  },
+  "forearm_rotation__forearm_rotation": {
+    "draco": "/robot/draco/Forearm_Rotation__Forearm_Rotation.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm_Rotation__Forearm_Rotation.stl",
+    "bytes": {
+      "stl": 41684,
+      "draco": 2744
+    }
+  },
+  "hand__hand": {
+    "draco": "/robot/draco/Hand__Hand.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Hand__Hand.stl",
+    "bytes": {
+      "stl": 275984,
+      "draco": 10728
+    }
+  },
+  "hand_motor_mount__hand_motor_mount": {
+    "draco": "/robot/draco/Hand_Motor_Mount__Hand_Motor_Mount.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Hand_Motor_Mount__Hand_Motor_Mount.stl",
+    "bytes": {
+      "stl": 8684,
+      "draco": 1588
+    }
+  },
+  "head__head__head__head": {
+    "draco": "/robot/draco/Head__Head__Head__Head.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Head__Head__Head__Head.stl",
+    "bytes": {
+      "stl": 237084,
+      "draco": 21096
+    }
+  },
+  "head_cover__head_cover__head_cover__head_cover": {
+    "draco": "/robot/draco/Head_Cover__Head_Cover__Head_Cover__Head_Cover.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Head_Cover__Head_Cover__Head_Cover__Head_Cover.stl",
+    "bytes": {
+      "stl": 317084,
+      "draco": 27988
+    }
+  },
+  "l_bicep__bicep": {
+    "draco": "/robot/draco/Bicep__Bicep_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bicep__Bicep_Mirrored.stl",
+    "bytes": {
+      "stl": 85684,
+      "draco": 4168
+    }
+  },
+  "l_bicep_cover__bicep_cover": {
+    "draco": "/robot/draco/Bicep_Cover__Bicep_Cover_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Bicep_Cover__Bicep_Cover_Mirrored.stl",
+    "bytes": {
+      "stl": 265684,
+      "draco": 9304
+    }
+  },
+  "l_forearm__forearm": {
+    "draco": "/robot/draco/Forearm__Forearm_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm__Forearm_Mirrored.stl",
+    "bytes": {
+      "stl": 292084,
+      "draco": 10604
+    }
+  },
+  "l_forearm_cover__forearm_cover": {
+    "draco": "/robot/draco/Forearm_Cover__Forearm_Cover_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm_Cover__Forearm_Cover_Mirrored.stl",
+    "bytes": {
+      "stl": 176784,
+      "draco": 7476
+    }
+  },
+  "l_forearm_rotation__forearm_rotation": {
+    "draco": "/robot/draco/Forearm_Rotation__Forearm_Rotation_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Forearm_Rotation__Forearm_Rotation_Mirrored.stl",
+    "bytes": {
+      "stl": 41684,
+      "draco": 2740
+    }
+  },
+  "l_hand__hand": {
+    "draco": "/robot/draco/Hand__Hand_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Hand__Hand_Mirrored.stl",
+    "bytes": {
+      "stl": 275984,
+      "draco": 10540
+    }
+  },
+  "l_hand_motor_mount__hand_motor_mount": {
+    "draco": "/robot/draco/Hand_Motor_Mount__Hand_Motor_Mount_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Hand_Motor_Mount__Hand_Motor_Mount_Mirrored.stl",
+    "bytes": {
+      "stl": 8684,
+      "draco": 1608
+    }
+  },
+  "l_left_finger__left_finger": {
+    "draco": "/robot/draco/Left_Finger__Left_Finger_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Left_Finger__Left_Finger_Mirrored.stl",
+    "bytes": {
+      "stl": 216884,
+      "draco": 8452
+    }
+  },
+  "l_right_finger__right_finger": {
+    "draco": "/robot/draco/Right_Finger__Right_Finger_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Right_Finger__Right_Finger_Mirrored.stl",
+    "bytes": {
+      "stl": 214184,
+      "draco": 8556
+    }
+  },
+  "l_shoulder__shoulder": {
+    "draco": "/robot/draco/Shoulder__Shoulder_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder__Shoulder_Mirrored.stl",
+    "bytes": {
+      "stl": 63884,
+      "draco": 3632
+    }
+  },
+  "l_shoulder_cover__shoulder_cover": {
+    "draco": "/robot/draco/Shoulder_Cover__Shoulder_Cover_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder_Cover__Shoulder_Cover_Mirrored.stl",
+    "bytes": {
+      "stl": 80084,
+      "draco": 3812
+    }
+  },
+  "l_shoulder_knuckle__shoulder_knuckle": {
+    "draco": "/robot/draco/Shoulder_Knuckle__Shoulder_Knuckle_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder_Knuckle__Shoulder_Knuckle_Mirrored.stl",
+    "bytes": {
+      "stl": 440384,
+      "draco": 14668
+    }
+  },
+  "l_wrist_cam__wrist_cam": {
+    "draco": "/robot/draco/Wrist_Cam__Wrist_Cam_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Wrist_Cam__Wrist_Cam_Mirrored.stl",
+    "bytes": {
+      "stl": 73184,
+      "draco": 4156
+    }
+  },
+  "l_wrist_knuckle__wrist_knuckle": {
+    "draco": "/robot/draco/Wrist_Knuckle__Wrist_Knuckle_Mirrored.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Wrist_Knuckle__Wrist_Knuckle_Mirrored.stl",
+    "bytes": {
+      "stl": 309384,
+      "draco": 10724
+    }
+  },
+  "left_finger__left_finger": {
+    "draco": "/robot/draco/Left_Finger__Left_Finger.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Left_Finger__Left_Finger.stl",
+    "bytes": {
+      "stl": 216884,
+      "draco": 8440
+    }
+  },
+  "left_wheel_cap__left_wheel_cap": {
+    "draco": "/robot/draco/Left_wheel_cap__Left_wheel_cap.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Left_wheel_cap__Left_wheel_cap.stl",
+    "bytes": {
+      "stl": 289984,
+      "draco": 24192
+    }
+  },
+  "left_wheel_tire__left_wheel_tire": {
+    "draco": "/robot/draco/Left_Wheel_Tire__Left_Wheel_Tire.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Left_Wheel_Tire__Left_Wheel_Tire.stl",
+    "bytes": {
+      "stl": 1721984,
+      "draco": 146516
+    }
+  },
+  "main_extrusion__main_extrusion__main_extrusion__main_extrusion": {
+    "draco": "/robot/draco/Main_Extrusion__Main_Extrusion__Main_Extrusion__Main_Extrusion.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Main_Extrusion__Main_Extrusion__Main_Extrusion__Main_Extrusion.stl",
+    "bytes": {
+      "stl": 62084,
+      "draco": 3976
+    }
+  },
+  "mirror30__mirror30": {
+    "draco": "/robot/draco/Mirror30__Mirror30.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Mirror30__Mirror30.stl",
+    "bytes": {
+      "stl": 858034,
+      "draco": 69036
+    }
+  },
+  "right_finger__right_finger": {
+    "draco": "/robot/draco/Right_Finger__Right_Finger.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Right_Finger__Right_Finger.stl",
+    "bytes": {
+      "stl": 214184,
+      "draco": 8572
+    }
+  },
+  "right_wheel_cap__right_wheel_cap": {
+    "draco": "/robot/draco/Right_Wheel_Cap__Right_Wheel_Cap.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Right_Wheel_Cap__Right_Wheel_Cap.stl",
+    "bytes": {
+      "stl": 290084,
+      "draco": 23992
+    }
+  },
+  "right_wheel_tire__right_wheel_tire": {
+    "draco": "/robot/draco/Right_Wheel_Tire__Right_Wheel_Tire.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Right_Wheel_Tire__Right_Wheel_Tire.stl",
+    "bytes": {
+      "stl": 1721784,
+      "draco": 148312
+    }
+  },
+  "shoulder__shoulder": {
+    "draco": "/robot/draco/Shoulder__Shoulder.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder__Shoulder.stl",
+    "bytes": {
+      "stl": 63884,
+      "draco": 3572
+    }
+  },
+  "shoulder_cover__shoulder_cover": {
+    "draco": "/robot/draco/Shoulder_Cover__Shoulder_Cover.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder_Cover__Shoulder_Cover.stl",
+    "bytes": {
+      "stl": 80084,
+      "draco": 3600
+    }
+  },
+  "shoulder_knuckle__shoulder_knuckle": {
+    "draco": "/robot/draco/Shoulder_Knuckle__Shoulder_Knuckle.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Shoulder_Knuckle__Shoulder_Knuckle.stl",
+    "bytes": {
+      "stl": 440384,
+      "draco": 14608
+    }
+  },
+  "top_cover_back__top_cover_back__top_cover_back__top_cover_back": {
+    "draco": "/robot/draco/Top_Cover_back__Top_Cover_back__Top_Cover_back__Top_Cover_back.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Top_Cover_back__Top_Cover_back__Top_Cover_back__Top_Cover_back.stl",
+    "bytes": {
+      "stl": 105584,
+      "draco": 9516
+    }
+  },
+  "wrist_cam__wrist_cam": {
+    "draco": "/robot/draco/Wrist_Cam__Wrist_Cam.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Wrist_Cam__Wrist_Cam.stl",
+    "bytes": {
+      "stl": 73184,
+      "draco": 4112
+    }
+  },
+  "wrist_knuckle__wrist_knuckle": {
+    "draco": "/robot/draco/Wrist_Knuckle__Wrist_Knuckle.glb",
+    "stl": "package://chopped_urdf_v2/meshes/Wrist_Knuckle__Wrist_Knuckle.stl",
+    "bytes": {
+      "stl": 309384,
+      "draco": 10692
+    }
+  }
+}
