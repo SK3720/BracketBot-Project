@@ -37,6 +37,7 @@ WRIST_CALIB_PATH = {
 }
 
 GRIPPER_IDX = 7
+# Single approach preset, from mimic/main.py's arm_config_6_new_chair_height.json.
 TARGET_LEFT = np.array([1.9854, 0.0725, -0.0013, 0.1995, 0.3168, 0.2469, 0.0328, -0.2446], dtype=np.float32)
 TARGET_RIGHT = np.array([-1.9881, -0.0958, -0.0026, -0.1828, -0.1104, -0.2372, 0.1600, 0.2471], dtype=np.float32)
 ARM_NAME = {"left": "arm_left", "right": "arm_right"}
@@ -46,21 +47,38 @@ PICKUP_TAG_ID = 5
 DROPOFF_TAG_ID = 0
 # Physical printed size (side length, meters) of each tag -- goto_tag.py needs
 # the real size to convert solvePnP's pose into an actual distance; getting
-# this wrong scales every distance estimate by the size ratio. The pickup/
-# return chair tag (id=5) was reprinted at 150mm; drop-off (id=0) is
-# unchanged at goto_tag.py's own default (69mm).
-MARKER_SIZE_M = {PICKUP_TAG_ID: 0.150, DROPOFF_TAG_ID: 0.069}
+# this wrong scales every distance estimate by the size ratio. Pickup tag
+# reverted back to 69mm; drop-off tag is still the 120mm reprint (under-tray
+# wrist tags are untouched).
+MARKER_SIZE_M = {PICKUP_TAG_ID: 0.069, DROPOFF_TAG_ID: 0.120}
 TRIGGER_DISTANCE_MM = 2000.0
-PICKUP_ARRIVE_MM = 875.0
+PICKUP_ARRIVE_MM = 815.0
 DROPOFF_ARRIVE_MM = 650.0  # 300mm came in too close to the actual person; widened per feedback (target range 500-750mm)
-RETURN_ARRIVE_MM = 875.0
+RETURN_ARRIVE_MM = 820.0
+SET_DOWN_TRIGGER_MM = 820.0  # start the full lower once the return leg gets this close, while still driving
 POST_ARRIVE_SETTLE_S = 0.5
+
+# goto_tag.py speed defaults are max-v=0.15 m/s, max-w=0.5 rad/s, search-w=0.3
+# rad/s -- bumped rotation a bit across all legs, and forward speed a bit more
+# just for the drop-off approach (Leg 2), per feedback.
+MAX_W_RAD_S = 0.65
+SEARCH_W_RAD_S = 0.4
+DROPOFF_MAX_V_MPS = 0.22
+PICKUP_MAX_V_MPS = 0.22  # sped up per feedback -- default is 0.15
+
+SOUND_DIR = "/home/bracketbot/bbapps/sounds"
+COMING_RIGHT_UP_MP3 = f"{SOUND_DIR}/coming_right_up.mp3"
+ELEVATOR_MUSIC_MP3 = f"{SOUND_DIR}/elevator_music.mp3"
+BON_APPETIT_MP3 = f"{SOUND_DIR}/bon_appetit.mp3"
+COMING_RIGHT_UP_VOLUME = 1.0  # louder than play_mp3.py's own default (0.3)
+BON_APPETIT_VOLUME = 1.6  # bumped further per feedback -- above 1.0 clips softly but reads louder
+ELEVATOR_MUSIC_VOLUME = 0.5  # bumped up too, but less than the cues
 GOTO_TAG_PORT = 8013
 STATUS_POLL_S = 0.2
 MAX_APPROACH_S = 120.0
 
 LIFT_CM = 50.0
-PARTIAL_LOWER_CM = 40.0  # how far down (of LIFT_CM) before the return drive; the rest happens once back
+PARTIAL_LOWER_CM = 30.0  # how far down (of LIFT_CM) before the return drive; the rest happens once back
 EMPIRICAL_SIGN = {"left": 1.0, "right": -1.0}
 WRIST_CONFIRM_WINDOW_S = 20.0
 
@@ -149,6 +167,38 @@ def ramp_hold_target(hold_target, targets, duration):
         time.sleep(0.01)
 
 
+def ramp_hold_target_until_converged(hold_target, targets, duration, label, max_attempts=3, tol=0.05):
+    """ramp_hold_target, but verified against the arm's actual measured
+    position afterward and retried if it didn't get there -- observed
+    repeatedly that a retarget issued after the arm has been holding one
+    fixed position for a long stretch (e.g. through a whole drive leg) can
+    silently do nothing even though hold_loop never stops writing; root
+    cause not confirmed, so retrying with fresh writes is the pragmatic
+    mitigation until it is. Returns True once both arms are within `tol`
+    turns of target, False if still not converged after max_attempts."""
+    for attempt in range(1, max_attempts + 1):
+        if attempt > 1:
+            # Re-seed from the arm's REAL measured position, not hold_target --
+            # by the time attempt 1's ramp finishes, hold_target already
+            # equals targets exactly, so re-ramping from hold_target is a
+            # no-op (starts == targets, no motion commanded) that just
+            # re-asserts the same unreached setpoint. Seeding from the actual
+            # position instead makes every retry a fresh corrective move.
+            for s in ("left", "right"):
+                hold_target[s] = get_motor_pos(ARM_NAME[s])
+        ramp_hold_target(hold_target, targets, duration)
+        time.sleep(0.3)
+        errs = {}
+        for s in ("left", "right"):
+            actual = get_motor_pos(ARM_NAME[s])
+            errs[s] = abs(actual[0] - targets[s][0])
+            print(f"  {s}: at J0={actual[0]:.4f} ({label} target={targets[s][0]:.4f}) -- "
+                  f"{'OK' if errs[s] < tol else 'MISMATCH'} (attempt {attempt}/{max_attempts})")
+        if all(e < tol for e in errs.values()):
+            return True
+    return False
+
+
 def load_wrist_undistort_maps(side):
     path = WRIST_CALIB_PATH[side]
     if not os.path.exists(path):
@@ -187,11 +237,15 @@ def check_wrist_marker(side, undistort_maps=None):
     return False
 
 
-def launch_goto_tag(side, marker_id, target_distance_mm):
+def launch_goto_tag(side, marker_id, target_distance_mm, max_v=None):
+    args = ["uv", "run", "examples/goto_tag.py", "--side", side, "--marker-id", str(marker_id),
+            "--target-distance-mm", str(target_distance_mm),
+            "--marker-size", str(MARKER_SIZE_M[marker_id]),
+            "--max-w", str(MAX_W_RAD_S), "--search-w", str(SEARCH_W_RAD_S)]
+    if max_v is not None:
+        args += ["--max-v", str(max_v)]
     return subprocess.Popen(
-        ["uv", "run", "examples/goto_tag.py", "--side", side, "--marker-id", str(marker_id),
-         "--target-distance-mm", str(target_distance_mm),
-         "--marker-size", str(MARKER_SIZE_M[marker_id])],
+        args,
         cwd="/home/bracketbot/bbapps",
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
@@ -205,12 +259,12 @@ def stop_goto_tag(proc):
         proc.kill()
 
 
-def drive_to_tag_simple(side, marker_id, target_distance_mm, label):
+def drive_to_tag_simple(side, marker_id, target_distance_mm, label, max_v=None):
     """Launch goto_tag targeting marker_id, wait for 'arrived', stop it. No
     concurrent arm action -- used for the drop-off and return legs, which are
     pure navigation."""
     print(f"\n=== {label}: driving to tag id={marker_id}, arrive={target_distance_mm:.0f}mm ===")
-    proc = launch_goto_tag(side, marker_id, target_distance_mm)
+    proc = launch_goto_tag(side, marker_id, target_distance_mm, max_v=max_v)
     try:
         t0 = time.monotonic()
         while time.monotonic() - t0 < MAX_APPROACH_S:
@@ -259,6 +313,64 @@ def back_up_by_odometry(distance_m=BACKUP_DISTANCE_M, speed_mps=BACKUP_SPEED_MPS
               + ("" if traveled >= distance_m else " -- hit max duration before reaching target"))
 
 
+class AudioPlayer:
+    """Plays mp3s via examples/play_mp3.py subprocesses (that script opens
+    bbos's speaker.audio Writer, which is exclusive -- only one play_mp3.py
+    may run at a time, so every call here goes through this one object)."""
+
+    def __init__(self):
+        self._proc = None
+
+    def play(self, path, blocking=True, volume=None):
+        args = ["uv", "run", "examples/play_mp3.py", path]
+        if volume is not None:
+            args += ["--volume", str(volume)]
+        self._proc = subprocess.Popen(
+            args,
+            cwd="/home/bracketbot/bbapps",
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        if blocking:
+            self._proc.wait()
+
+    def stop(self):
+        proc = self._proc
+        if proc is not None and proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=2.0)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+
+
+def start_play_then_loop(player, intro_path, loop_path, intro_volume=None, loop_volume=None):
+    """Plays intro_path once (if given), then loops loop_path repeatedly
+    until stopped -- all in a background thread so it never blocks driving
+    or arm motion."""
+    stop_event = threading.Event()
+
+    def worker():
+        if intro_path:
+            player.play(intro_path, blocking=True, volume=intro_volume)
+        while not stop_event.is_set():
+            player.play(loop_path, blocking=False, volume=loop_volume)
+            while player._proc.poll() is None:
+                if stop_event.is_set():
+                    player.stop()
+                    return
+                time.sleep(0.1)
+
+    thread = threading.Thread(target=worker, daemon=True)
+    thread.start()
+    return stop_event, thread
+
+
+def stop_play_then_loop(player, stop_event, thread):
+    stop_event.set()
+    player.stop()
+    thread.join(timeout=5.0)
+
+
 def start_voice_thread(waiting_for_thanks, thanks_heard, food_requested):
     """Starts the single background voice-command receiver for the whole
     script's lifetime -- food-request and thank-you are dispatched from
@@ -291,7 +403,11 @@ def start_voice_thread(waiting_for_thanks, thanks_heard, food_requested):
     return thread
 
 
+audio = None  # module-level so a Ctrl+C in __main__ can reach it and stop playback
+
+
 def main():
+    global audio
     side = sys.argv[1] if len(sys.argv) > 1 else "left"
 
     print("=== Loading wrist camera fisheye calibration (if available) ===")
@@ -308,9 +424,13 @@ def main():
     food_requested.wait()
     t_food_recognized = time.monotonic()
 
+    audio = AudioPlayer()
+    audio_stop, audio_thread = start_play_then_loop(audio, COMING_RIGHT_UP_MP3, ELEVATOR_MUSIC_MP3,
+                                                     intro_volume=COMING_RIGHT_UP_VOLUME, loop_volume=ELEVATOR_MUSIC_VOLUME)
+
     # ---- Leg 1: pick up the tray ----
     print(f"\n=== Leg 1: pick up tray at tag id={PICKUP_TAG_ID} ===")
-    proc = launch_goto_tag(side, PICKUP_TAG_ID, PICKUP_ARRIVE_MM)
+    proc = launch_goto_tag(side, PICKUP_TAG_ID, PICKUP_ARRIVE_MM, max_v=PICKUP_MAX_V_MPS)
     print(f"  [timing] goto_tag subprocess launched {time.monotonic() - t_food_recognized:.2f}s after food request recognized")
     cfgs = {"left": Config("arm_left"), "right": Config("arm_right")}
     dof = cfgs["left"].dof
@@ -475,7 +595,7 @@ def main():
         back_up_by_odometry()
 
         # ---- Leg 2: navigate to drop-off tag ----
-        if not drive_to_tag_simple(side, DROPOFF_TAG_ID, DROPOFF_ARRIVE_MM, "Leg 2"):
+        if not drive_to_tag_simple(side, DROPOFF_TAG_ID, DROPOFF_ARRIVE_MM, "Leg 2", max_v=DROPOFF_MAX_V_MPS):
             hold_forever("ABORT: could not reach drop-off tag.")
             return
 
@@ -488,6 +608,10 @@ def main():
         if not got_thanks:
             print("  no thank-you heard within timeout -- proceeding anyway.")
 
+        stop_play_then_loop(audio, audio_stop, audio_thread)
+        audio_stop, audio_thread = start_play_then_loop(audio, BON_APPETIT_MP3, ELEVATOR_MUSIC_MP3,
+                                                         intro_volume=BON_APPETIT_VOLUME, loop_volume=ELEVATOR_MUSIC_VOLUME)
+
         # Drop the tray part-way (PARTIAL_LOWER_CM of the LIFT_CM total)
         # BEFORE attempting the return drive -- not after, and not all the
         # way down yet. The fully-lifted tray sits right in front of the
@@ -497,42 +621,56 @@ def main():
         # tag it can never see. Coming down most of the way is enough to
         # clear the camera's view while leaving only a small remainder for
         # the full lower once we've actually arrived back.
-        # Retargets hold_target in place (ramp_hold_target) rather than
-        # stopping hold_loop first -- stopping the refresh even briefly was
-        # observed to make the arm stop responding to new position commands
-        # for the rest of that ramp (see ramp_hold_target's docstring-ish
-        # comment), so the hold thread must keep running the whole time.
         print(f"\n=== Lowering tray {PARTIAL_LOWER_CM:.0f}cm of {LIFT_CM:.0f}cm before returning "
               "(tray was blocking the chair's tag) ===")
         full_up = {s: hold_target[s].copy() for s in ("left", "right")}
         partial_frac = PARTIAL_LOWER_CM / LIFT_CM
         partial_target = {s: (full_up[s] + partial_frac * (lift_starts[s] - full_up[s])).astype(np.float32)
                            for s in ("left", "right")}
-        ramp_hold_target(hold_target, partial_target, 4.0)
-        time.sleep(0.3)
-        for s in ("left", "right"):
-            actual = get_motor_pos(ARM_NAME[s])
-            err = abs(actual[0] - partial_target[s][0])
-            print(f"  {s}: at J0={actual[0]:.4f} (partial-lower target={partial_target[s][0]:.4f}) -- "
-                  f"{'OK' if err < 0.05 else 'MISMATCH'}")
+        ramp_hold_target_until_converged(hold_target, partial_target, 4.0, "partial-lower")
 
         # ---- Leg 4: return to pickup tag ----
         # Tray is only half-lowered, still under active holding -- on
-        # failure here we must still not let the writers close.
-        if not drive_to_tag_simple(side, PICKUP_TAG_ID, RETURN_ARRIVE_MM, "Leg 4 (return)"):
+        # failure here we must still not let the writers close. Inlined
+        # (like Leg 1) rather than using drive_to_tag_simple so the set-down
+        # lower can trigger WHILE STILL DRIVING once within
+        # SET_DOWN_TRIGGER_MM of the tag, the same "do arm stuff mid-
+        # approach, don't wait for a full stop" pattern Leg 1 already uses.
+        print(f"\n=== Leg 4 (return): driving to tag id={PICKUP_TAG_ID}, arrive={RETURN_ARRIVE_MM:.0f}mm ===")
+        proc = launch_goto_tag(side, PICKUP_TAG_ID, RETURN_ARRIVE_MM)
+        set_down_triggered = False
+        try:
+            t_return = time.monotonic()
+            arrived = False
+            while time.monotonic() - t_return < MAX_APPROACH_S:
+                st = get_status()
+                if st is not None:
+                    print(f"  status: {st}")
+                    if not set_down_triggered:
+                        dist = st.get("target_distance_mm")
+                        if dist is not None and dist <= SET_DOWN_TRIGGER_MM:
+                            set_down_triggered = True
+                            print(f"\n=== Within {SET_DOWN_TRIGGER_MM:.0f}mm of the chair tag -- "
+                                  "lowering arms all the way WHILE still driving ===")
+                            if not ramp_hold_target_until_converged(hold_target, lift_starts, 4.0, "full-lower"):
+                                print("  WARNING: full-lower did not converge after retries -- "
+                                      "tray may not be fully down.")
+                    if st.get("mode") == "arrived":
+                        arrived = True
+                        break
+                time.sleep(STATUS_POLL_S)
+        finally:
+            stop_goto_tag(proc)
+        if not arrived:
             hold_forever("ABORT: could not return to pickup tag.")
             return
 
-        # Arrived -- now drop the arms all the way back to the original
-        # pre-lift height, same continuous-refresh approach as above.
-        print("\n=== Returned to pickup location -- lowering arms all the way ===")
-        ramp_hold_target(hold_target, lift_starts, 4.0)
-        time.sleep(0.3)
-        for s in ("left", "right"):
-            actual = get_motor_pos(ARM_NAME[s])
-            err = abs(actual[0] - lift_starts[s][0])
-            print(f"  {s}: returned to J0={actual[0]:.4f} (target={lift_starts[s][0]:.4f}) -- "
-                  f"{'OK' if err < 0.05 else 'MISMATCH'}")
+        # Defensive fallback: shouldn't happen since RETURN_ARRIVE_MM <=
+        # SET_DOWN_TRIGGER_MM (arrival is always within the trigger
+        # distance), but don't skip lowering the tray if it somehow does.
+        if not set_down_triggered:
+            print("\n=== Arrived without crossing the set-down trigger distance -- lowering arms now ===")
+            ramp_hold_target_until_converged(hold_target, lift_starts, 4.0, "full-lower")
 
         # Tray is fully back at its original pre-lift height now -- the same
         # "safe to stop holding" point already validated in
@@ -544,8 +682,21 @@ def main():
 
         back_up_by_odometry(distance_m=RETURN_BACKUP_DISTANCE_M)
 
+        stop_play_then_loop(audio, audio_stop, audio_thread)
+
         print("\n=== Delivery loop complete. Tray lowered back to original height. ===")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        # A daemon audio thread just relaunches the next mp3 as soon as the
+        # current one exits -- if the currently-playing play_mp3.py subprocess
+        # doesn't reliably get Ctrl+C's SIGINT itself (e.g. it's a grandchild
+        # via `uv run`, not a direct child of the foreground process group),
+        # music keeps looping even after this script has exited. Killing it
+        # by PID here doesn't depend on that signal propagation at all.
+        if audio is not None:
+            audio.stop()
+        print("\nInterrupted -- audio playback stopped.")

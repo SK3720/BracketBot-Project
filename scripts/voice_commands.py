@@ -43,8 +43,8 @@ MAX_SEGMENT_S = 8.0
 MIN_SEGMENT_S = 0.3
 
 THANKS_PHRASES = ["thank you", "thanks", "appreciate it", "appreciated", "thank u"]
-FOOD_REQUEST_PHRASES = ["i want my food", "i want food", "where's my food", "where is my food",
-                         "bring my food", "get my food", "i'm hungry", "im hungry", "food please"]
+FOOD_REQUEST_PHRASES = ["hey bracket, can i have my food", "hey bracket can i have my food",
+                         "can i have my food"]
 
 _model = None
 
