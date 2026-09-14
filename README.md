@@ -1,5 +1,7 @@
 # BracketBot Waiter Delivery
 
+## DEMO AND PROJECT: [BracketBot Devpost](https://devpost.com/software/bracketbutler)
+
 Autonomous delivery loop for a two-armed BracketBot: hears a food request,
 picks up a tray from a chair, drives it to a person, waits for a thank-you,
 returns the tray, and lowers the arms back down.
